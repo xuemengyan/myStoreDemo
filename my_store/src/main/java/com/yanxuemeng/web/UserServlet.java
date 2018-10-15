@@ -24,8 +24,31 @@ import java.util.Map;
 public class UserServlet extends BaseServlet {
     private userService service = new userService();
 
+        protected void loginOut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            request.getSession().invalidate();
+            response.sendRedirect("http://www.yanxuemeng.com:8020/web/index.html");
 
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        }
+
+
+        protected void loginStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            //查看登陆状态的方法
+            ResultInfo info = null;
+            //获取登陆状态
+            User user =(User)request.getSession().getAttribute("user");
+            if (user!=null){
+                //用户已经登陆
+                info = new ResultInfo(ResultInfo.SUCCESS,user,null);
+            }else{
+                //用户没有登录
+                info = new ResultInfo(ResultInfo.FAILED,null,null);
+            }
+            String jsonStr = new ObjectMapper().writeValueAsString(info);
+            response.getWriter().write(jsonStr);
+        }
+
+
+        protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //生成返回信息对象
         ResultInfo info = null;
         //验证码校验
