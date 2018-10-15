@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.yanxuemeng.domain.ResultInfo;
 import com.yanxuemeng.domain.User;
+import com.yanxuemeng.exception.PasswordErrorException;
 import com.yanxuemeng.exception.UsernameExistsException;
+import com.yanxuemeng.exception.UsernameNotExistsException;
 import com.yanxuemeng.service.userService;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -21,6 +23,47 @@ import java.util.Map;
 @WebServlet(name = "UserServlet",urlPatterns = "/user")
 public class UserServlet extends BaseServlet {
     private userService service = new userService();
+
+
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //生成返回信息对象
+        ResultInfo info = null;
+        //验证码校验
+        //从session中获取验证码
+        String webCheckCode = (String)request.getSession().getAttribute("checkCode");
+        //获取表单中的验证码
+        String chenkCode = request.getParameter("check");
+        //比较
+        if (chenkCode.equalsIgnoreCase(webCheckCode)){
+            //获取表单数据
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            //调用service层进行验证登录
+            try {
+                User user = service.login(username,password);
+                //将返回的user存到session中用作登录状态
+                if (user !=null){
+                    request.getSession().setAttribute("user",user);
+                    info = new ResultInfo(ResultInfo.SUCCESS,null,null);
+                }
+            } catch (UsernameNotExistsException e) {
+                e.printStackTrace();
+                info = new ResultInfo(ResultInfo.FAILED,null,e.getMessage());
+            }catch (PasswordErrorException e) {
+                e.printStackTrace();
+                info = new ResultInfo(ResultInfo.FAILED,null,e.getMessage());
+            }catch (Exception e) {
+                e.printStackTrace();
+                info = new ResultInfo(ResultInfo.FAILED,null,"服务器出错");
+            }
+
+        }else{
+            info = new ResultInfo(ResultInfo.FAILED,null,"验证码错误");
+        }
+        String jsonStr = new ObjectMapper().writeValueAsString(info);
+        response.getWriter().write(jsonStr);
+
+    }
 
     protected void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //生成返回信息对象

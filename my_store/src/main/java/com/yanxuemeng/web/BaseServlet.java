@@ -23,7 +23,6 @@ public class BaseServlet extends HttpServlet {
         try {
             Method method = clazz.getDeclaredMethod(action, HttpServletRequest.class, HttpServletResponse.class);
             method.setAccessible(true);
-            //调用方法
             method.invoke(this,request,response);
 
 
