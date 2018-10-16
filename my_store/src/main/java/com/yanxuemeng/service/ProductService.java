@@ -3,6 +3,7 @@ package com.yanxuemeng.service;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.yanxuemeng.dao.ProductDao;
 import com.yanxuemeng.domain.Category;
+import com.yanxuemeng.domain.PageBean;
 import com.yanxuemeng.domain.Product;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -49,6 +50,33 @@ public class ProductService {
             e.printStackTrace();
         }
         return null;
+
+    }
+
+    public PageBean<Product> getProductPage(String cid, String curPage) {
+
+        try {
+            PageBean<Product> pageBean = new PageBean<>();
+            //封装当前页
+            pageBean.setCurPage(Integer.parseInt(curPage));
+            //每一页显示的商品数
+            int pageSize = 5;
+            pageBean.setPageSize(pageSize);
+            //封装总商品数
+            int count = dao.findAllProductCount(cid);
+            pageBean.setCount(count);
+            //封装总页数
+            int totalPage = (int)Math.ceil(count*1.0/pageSize);
+            pageBean.setTotalPage(totalPage);
+            //封装每一页的商品列表
+            List<Product> list = dao.findAllProductList(Integer.parseInt(curPage),pageSize,cid);
+            pageBean.setPageList(list);
+            return pageBean;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
 
     }
 }

@@ -1,6 +1,7 @@
 package com.yanxuemeng.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanxuemeng.domain.PageBean;
 import com.yanxuemeng.domain.Product;
 import com.yanxuemeng.domain.ResultInfo;
 import com.yanxuemeng.service.ProductService;
@@ -10,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Result;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,26 @@ public class ProductServlet extends BaseServlet {
 
     }
 
+    //查询分页商品信息
+    private void getProductPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ResultInfo info = null;
+        //获取cid
+        String cid = request.getParameter("cid");
+        String curPage = request.getParameter("curPage");
+        //调用service层封装pageBean
+        PageBean<Product> pageBean  = service.getProductPage(cid,curPage);
+        //响应回页面
+        if (pageBean!=null){
+            info = new ResultInfo(ResultInfo.SUCCESS,pageBean,null);
+        }else {
+            info = new ResultInfo(ResultInfo.FAILED,null,"服务器正在维护");
+        }
+        String jsonStr = new ObjectMapper().writeValueAsString(info);
+        response.getWriter().write(jsonStr);
+    }
+
 
 
     }
+
+
