@@ -31,7 +31,7 @@ public class ProductServlet extends BaseServlet {
 
     //查询指定商品的详细信息
     protected void findProductDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("zzzzz");
+
         ResultInfo info = null;
         //获取pid
         String pid = request.getParameter("pid");
