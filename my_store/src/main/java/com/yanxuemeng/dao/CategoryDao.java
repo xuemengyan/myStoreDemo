@@ -3,6 +3,7 @@ package com.yanxuemeng.dao;
 import com.yanxuemeng.domain.Category;
 import com.yanxuemeng.utils.C3P0Utils;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
@@ -35,5 +36,16 @@ public class CategoryDao {
         String sql = "insert into category values(?,?)";
         int rows = qr.update(sql, cid, cname);
         return rows;
+    }
+
+    public Category findCategoryByCid(String cid) throws SQLException {
+        String sql = "select * from category where cid = ?";
+        Category category = qr.query(sql, new BeanHandler<>(Category.class), cid);
+        return  category;
+    }
+
+    public int updateCategory(Category category) throws SQLException {
+        String sql = "update category set cname = ? where cid = ?";
+        return  qr.update(sql, category.getCname(),category.getCid());
     }
 }

@@ -42,4 +42,23 @@ public class CategoryService {
         }
         return  false;
     }
+
+    public Category findCategoryByCid(String cid) {
+        try{
+            return  dao.findCategoryByCid(cid);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
+    public boolean updateCategory(Category category) {
+        try{
+            int rows = dao.updateCategory(category);
+            return  rows > 0;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
 }

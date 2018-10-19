@@ -7,6 +7,7 @@ import com.yanxuemeng.domain.ResultInfo;
 import com.yanxuemeng.exception.CategoryDeleteErrorException;
 import com.yanxuemeng.service.CategoryService;
 import com.yanxuemeng.utils.JedisUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import redis.clients.jedis.Jedis;
 
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "categoryServlet",urlPatterns = "/category")
 public class categoryServlet extends BaseServlet {
@@ -86,6 +88,23 @@ public class categoryServlet extends BaseServlet {
 
     }
 
+    protected void findCategoryByCid(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ResultInfo info = null;
+        try{
+            //1:获取参数cid
+            String cid = request.getParameter("cid");
+            //2:调用Service查询数据库
+            Category category = service.findCategoryByCid(cid);
+            info = new ResultInfo(MyFlag.SUCCESS,category,null);
+        }catch (Exception e){
+            e.printStackTrace();
+            info = new ResultInfo(MyFlag.FAILED,null,"服务器正在维护");
+        }
+        String jsonStr = new ObjectMapper().writeValueAsString(info);
+        //将json响应给页面
+        response.getWriter().write(jsonStr);
+    }
+
 
 
 
@@ -93,6 +112,27 @@ public class categoryServlet extends BaseServlet {
         Jedis jedis = JedisUtils.getJedis();
         jedis.del("categoryList");
         jedis.close();
+    }
+    protected void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //1:获取参数cid
+        ResultInfo info = null;
+        try {
+            Map<String, String[]> map = request.getParameterMap();
+            Category category = new Category();
+            BeanUtils.populate(category, map);
+            ////2:调用Service修改数据库
+            boolean bl =  service.updateCategory(category);
+            //删除redis
+            delRedis();
+            info = new ResultInfo(MyFlag.SUCCESS,null,null);
+        } catch (Exception e) {
+            info = new ResultInfo(MyFlag.FAILED,null,"服务器正在维护");
+            e.printStackTrace();
+        }
+        String jsonStr = new ObjectMapper().writeValueAsString(info);
+        //将json响应给页面
+        response.getWriter().write(jsonStr);
+
     }
 
 
