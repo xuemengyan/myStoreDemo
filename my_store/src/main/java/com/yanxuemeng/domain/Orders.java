@@ -2,8 +2,7 @@ package com.yanxuemeng.domain;
 
 import java.util.List;
 
-public class Order {
-
+public class Orders {
     // 订单id
     private String oid;
     // 订单时间
@@ -12,22 +11,23 @@ public class Order {
     private Double total;
     // 订单状态
     private Integer state;// 订单状态 0:未付款 1:已付款 2:已发货 3.已完成
-    //    // 收获地址
+    // 收获地址
     private String address;
     // 收货人姓名
     private String name;
     // 收获人电话
     private String telephone;
+    //用户主键
     private String uid;
 
-    private List<OrderItem> items;
+    List<OrderItemView> list;
 
-    public List<OrderItem> getItems() {
-        return items;
+    public List<OrderItemView> getList() {
+        return list;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public void setList(List<OrderItemView> list) {
+        this.list = list;
     }
 
     public String getOid() {
@@ -92,20 +92,5 @@ public class Order {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "oid='" + oid + '\'' +
-                ", ordertime='" + ordertime + '\'' +
-                ", total=" + total +
-                ", state=" + state +
-                ", address='" + address + '\'' +
-                ", name='" + name + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", uid='" + uid + '\'' +
-                ", items=" + items +
-                '}';
     }
 }

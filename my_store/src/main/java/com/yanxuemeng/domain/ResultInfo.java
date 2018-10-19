@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * 用于封装后端返回前端数据对象
  */
+
 public class ResultInfo implements Serializable {
     public static final int SUCCESS = 1;
     public static final int FAILED = 0;

@@ -1,9 +1,10 @@
 package com.yanxuemeng.domain;
 
 public class CartItem {
-    private Product product;
-    private int count;
-    private double subTotal;
+    private Product product;  //商品信息
+    private int count;        //商品数量
+    private double subTotal; //小计
+
 
     public Product getProduct() {
         return product;
