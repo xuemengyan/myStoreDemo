@@ -1,9 +1,24 @@
 package com.yanxuemeng.utils;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 public class UploadUtils {
+	//获取文件项集合
+	public static List<FileItem> getFileItem(HttpServletRequest request) throws FileUploadException {
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload fileUpload = new ServletFileUpload(factory);
+        List<FileItem> list = fileUpload.parseRequest(request);
+        return  list;
+    }
 	/**
 	 * 获取文件真实名称
 	 * 由于浏览器的不同获取的名称可能为:c:/upload/1.jpg或者1.jpg 
